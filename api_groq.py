@@ -8,7 +8,8 @@ response = client.chat.completions.create(
     messages=[
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "What is the capital of France?"},
-        {"role": "user", "content": "What is the largest mammal?"}
+        {"role": "user", "content": "What is the largest mammal?"},
+        {"role": "user", "content": "Weather in berlin? 05.apr.2026"},
 
     ],    
     temperature=1,

@@ -1,7 +1,18 @@
 from sentence_transformers import SentenceTransformer
+from chromadb import EmbeddingFunction, Documents, Embeddings 
 import numpy as np
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
+
+
+# ChromaDB needs embeddings in a specific format — 
+# this wrapper tells ChromaDB "use MY model, not your default one."
+class MyEmbedding(EmbeddingFunction):
+    def __init__(self):
+        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+ 
+    def __call__(self, input: Documents) -> Embeddings:
+        return self.model.encode(input).tolist()
 
 def get_embedding(text):
     embedding = model.encode(text)
@@ -14,9 +25,9 @@ def cosine_similarity(vec1, vec2):
         return 0.0
     return dot_product / (norm_vec1 * norm_vec2)
 
-dog   = get_embedding("dog")
-puppy = get_embedding("puppy")
-pizza = get_embedding("pizza")
+# dog   = get_embedding("dog")
+# puppy = get_embedding("puppy")
+# pizza = get_embedding("pizza")
 
-print("dog vs puppy:", cosine_similarity(dog, puppy))   # HIGH
-print("dog vs pizza:", cosine_similarity(dog, pizza))   # LOW
+# print("dog vs puppy:", cosine_similarity(dog, puppy))   # HIGH
+# print("dog vs pizza:", cosine_similarity(dog, pizza))   # LOW

@@ -4,12 +4,8 @@ client     = chromadb.Client()
 collection = client.create_collection("my_docs")
 
 collection.add(
-    documents=[
-        "Our refund policy is 30 days, no questions asked.",
-        "We sell laptops, phones, and tablets.",
-        "Customer support is available 24/7 via chat.",
-    ],
-    ids=["chunk1", "chunk2", "chunk3"]
+    documents=[c.page_content for c in chunks],  # real chunks
+    ids=[f"chunk_{i}" for i in range(len(chunks))]  # auto IDs
 )
 
 results = collection.query(

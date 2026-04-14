@@ -1,16 +1,11 @@
 import chromadb
+from embadding import MyEmbedding
+def build_vectorstore(chunks):
+    client = chromadb.Client()
+    collection = client.create_collection("docs", embedding_function=MyEmbedding())
 
-client     = chromadb.Client()
-collection = client.create_collection("my_docs")
-
-collection.add(
-    documents=[c.page_content for c in chunks],  # real chunks
-    ids=[f"chunk_{i}" for i in range(len(chunks))]  # auto IDs
-)
-
-results = collection.query(
-    query_texts=["what do you sell?"],
-    n_results=1
-)
-
-print(results["documents"])
+    collection.add(
+        documents=[c.page_content for c in chunks],
+        ids=[f"chunk_{i}" for i in range(len(chunks))]
+    )
+    return collection

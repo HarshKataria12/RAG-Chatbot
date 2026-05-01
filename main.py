@@ -25,6 +25,32 @@ if uploaded_file is not None:
             chunks = load_and_chunk_pdf(tmp_file_path)
             st.session_state.collection = build_vectorstore(chunks)
         st.success("PDF processed and stored in vector database!")
+    # chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    # show pervious Q&A
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+    # user input
+    question = st.chat_input("Ask a question about your PDF...")
+
+    if question:
+        # Show user message
+        with st.chat_message("user"):
+            st.write(question)
+        st.session_state.messages.append(
+            {"role": "user", "content": question}
+        )
+
+        # Get + show answer
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                answer = ask_groq(question, st.session_state.collection)
+            st.write(answer)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": answer}
+        )
 
 
 
